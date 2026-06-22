@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 public class Session {
     private String currentUser;
     private SharedPreferences preferencesSession;
-    private SharedPreferences.Editor prefEditor = preferencesSession.edit();
+
+    private SharedPreferences.Editor prefEditor;
     private CharacterProfile SelectedCharacter;
 
     public Session(Context context) {
         preferencesSession = context.getSharedPreferences("The Tavern", Context.MODE_PRIVATE);
+        prefEditor = preferencesSession.edit();
     }
 
     public void setCurrentUser(String s){

@@ -1,7 +1,5 @@
 package com.blackmensa.ddtool.Core;
 
-import android.widget.Switch;
-
 public class CharacterProfile {
     private String Name;
     private String Class;
