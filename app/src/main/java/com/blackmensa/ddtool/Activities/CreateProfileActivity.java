@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.blackmensa.ddtool.Core.CharacterProfile;
-import com.blackmensa.ddtool.Core.DataBaseManager;
+import com.blackmensa.ddtool.domain.model.CharacterProfile;
+import com.blackmensa.ddtool.core.DataBaseManager;
 import com.blackmensa.ddtool.R;
 import com.blackmensa.ddtool.databinding.NewProfileBinding;
 

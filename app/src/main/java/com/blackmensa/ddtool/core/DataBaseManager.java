@@ -1,19 +1,18 @@
-package com.blackmensa.ddtool.Core;
+package com.blackmensa.ddtool.core;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.ArrayList;
+import com.blackmensa.ddtool.domain.model.CharacterProfile;
 
 public class DataBaseManager extends SQLiteOpenHelper {
     public static final String DB_Name = "The Tavern";
-    public static final int DB_Version = 1;
+    public static final int DB_Version = 2;
     private static final String USERS_TABLE = "Users";
     private static final String PROFILE_TABLE = "Profiles";
     private static final String PROFILECHARACTER_TABLE = "ProfileCharacters";
@@ -38,14 +37,14 @@ public class DataBaseManager extends SQLiteOpenHelper {
     public static String INTELLIGENCE = "Intelligence";
     public static String WISDOM = "Wisdom";
     public static String CHARISMA = "Charisma";
-    public static String STRENGTH_SAVE = "Save 1";
-    public static String DEXTERITY_SAVE = "Save 2";
-    public static String CONSTITUTION_SAVE = "Save 3";
-    public static String INTELLIGENCE_SAVE = "Save 4";
-    public static String WISDOM_SAVE = "Save 5";
-    public static String CHARISMA_SAVE = "Save 6";
+    public static String STRENGTH_SAVE = "Strength_Save";
+    public static String DEXTERITY_SAVE = "Dexterity_Save";
+    public static String CONSTITUTION_SAVE = "Constitution_Save";
+    public static String INTELLIGENCE_SAVE = "Intelligence_Save";
+    public static String WISDOM_SAVE = "Wisdom_Save";
+    public static String CHARISMA_SAVE = "Charisma_Save";
     public static String ACROBATICS = "Acrobatics";
-    public static String ANIMAL_HANDLING = "Animal Handling";
+    public static String ANIMAL_HANDLING = "Animal_Handling";
     public static String ARCANA = "Arcana";
     public static String ATHLETICS = "Athletics";
     public static String DECEPTION = "Deception";
@@ -59,24 +58,24 @@ public class DataBaseManager extends SQLiteOpenHelper {
     public static String PERFORMANCE = "Performance";
     public static String PERSUASION = "Persuasion";
     public static String RELIGION = "Religion";
-    public static String SLEIGHT_OF_HAND = "Sleight of Hand";
+    public static String SLEIGHT_OF_HAND = "Sleight_Of_Hand";
     public static String STEALTH = "Stealth";
     public static String SURVIVAL = "Survival";
 
-    public static String CODE = "Room Code";
+    public static String CODE = "Room_Code";
     public static String ROOM_NAME = "Name";
 
-    public static String MT_CODE = "MT Code";
+    public static String MT_CODE = "MT_Code";
     public static String MEMBER_EMAIL = "Member";
-    public static String ROOM_CODE = "Room Code";
+    public static String ROOM_CODE = "Room_Code";
 
-    public static String ANNOUNCE_CODE = "Announce Code";
+    public static String ANNOUNCE_CODE = "Announce_Code";
     public static String OWNER_EMAIL = "Email";
     public static String DESCRIPTION = "Description";
-    public static String ANNOUNCE_ROOM = "Announce Room";
+    public static String ANNOUNCE_ROOM = "Announce_Room";
 
-    public static String REQUEST_CODE = "Request Code";
-    public static String USER_REQUEST = "User Request";
+    public static String REQUEST_CODE = "Request_Code";
+    public static String USER_REQUEST = "User_Request";
 
     public DataBaseManager(Context context) {
         super( context, DB_Name, null, DB_Version);
@@ -127,28 +126,32 @@ public class DataBaseManager extends SQLiteOpenHelper {
                     + RELIGION + " boolean,"
                     + SLEIGHT_OF_HAND + " boolean,"
                     + STEALTH + " boolean,"
-                    + SURVIVAL + " boolean,"
-
+                    + SURVIVAL + " boolean"
                     +")");
+
             db.execSQL("CREATE TABLE IF NOT EXISTS " + ROOMS_TABLE + "("
                     + CODE + " int PRIMARY KEY,"
                     + ROOM_NAME + " string(255) NOT NULL"
                     +")");
+
             db.execSQL("CREATE TABLE IF NOT EXISTS " + ANNOUNCES_TABLE + "("
                     + ANNOUNCE_CODE + " int PRIMARY KEY,"
                     + OWNER_EMAIL + " string(255) NOT NULL,"
                     + DESCRIPTION + " string(255),"
                     + ANNOUNCE_ROOM + " int"
                     +")");
+
             db.execSQL("CREATE TABLE IF NOT EXISTS " + REQUEST_TABLE + "("
                     + REQUEST_CODE + " int PRIMARY KEY,"
                     + USER_REQUEST + " string(255)"
                     +")");
+
             db.execSQL("CREATE TABLE IF NOT EXISTS " + MEMBERS_TABLE + "("
                     + MT_CODE + " int PRIMARY KEY,"
-                    + MEMBER_EMAIL + " string(255) FOREIGN KEY NOT NULL,"
-                    + ROOM_CODE + " int FOREIGN KEY NOT NULL"
+                    + MEMBER_EMAIL + " string(255) NOT NULL,"
+                    + ROOM_CODE + " int NOT NULL"
                     +")");
+
             db.setTransactionSuccessful();
         }catch (SQLException exc){
             Log.e("DataBase.onCreate", "Se encontró el siguiente error: " + exc.getMessage());
@@ -160,6 +163,13 @@ public class DataBaseManager extends SQLiteOpenHelper {
     //COMPLETAR
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MEMBERS_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + REQUEST_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ANNOUNCES_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ROOMS_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PROFILE_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + USERS_TABLE);
+
         onCreate(sqLiteDatabase);
     }
 
@@ -173,22 +183,29 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
         try {
             helper.beginTransaction();
-            helper.insert( USERS_TABLE, null, values);
+            long result = helper.insert( USERS_TABLE, null, values);
             helper.setTransactionSuccessful();
+
+            return result != -1;
         }catch (SQLException exc){
-            helper.close();
+            Log.e("DataBase.addUser", "Error al añadir usuario: " + exc.getMessage());
             return false;
         }finally {
+            helper.endTransaction();
             helper.close();
-            return true;
         }
     }
 
     public boolean getUser(String email, String password){
         SQLiteDatabase helper = getReadableDatabase();
-        String select = "select * from  " + USERS_TABLE + " where " +
-                USER_EMAIL + " = " + "'"+email+"'" + " and " + USER_PASSWORD + " = " + "'"+password+"'";
-        Cursor cursor = helper.rawQuery(select, null);
+        Cursor cursor = helper.query(
+                USERS_TABLE,
+                null,
+                USER_EMAIL + " = ? and " + USER_PASSWORD + " = ?",
+                new String[]{email, password},
+                null,
+                null,
+                null);
         cursor.moveToFirst();
         if(cursor.getCount() > 0){
             cursor.close();
@@ -263,14 +280,16 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
         try {
             helper.beginTransaction();
-            helper.insert( PROFILE_TABLE, null, values);
+            long result = helper.insert( PROFILE_TABLE, null, values);
             helper.setTransactionSuccessful();
+
+            return result != -1;
         }catch (SQLException exc){
-            helper.close();
+            Log.e("DataBase.addProfile", "Error al añadir perfil: " + exc.getMessage());
             return false;
         }finally {
+            helper.endTransaction();
             helper.close();
-            return true;
         }
     }
 }

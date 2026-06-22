@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
-import com.blackmensa.ddtool.Core.DataBaseManager;
-import com.blackmensa.ddtool.Core.Session;
+import com.blackmensa.ddtool.core.DataBaseManager;
+import com.blackmensa.ddtool.core.Session;
 import com.blackmensa.ddtool.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,12 +30,12 @@ public class LoginActivity extends AppCompatActivity {
             String logEmail = binding.editTextEmailAddress.getText().toString();
             String logPass = binding.editTextPassword.getText().toString();
 
-            //if (conexionBD.getUser(logEmail, logPass)) {
+            if (conexionBD.getUser(logEmail, logPass)) {
                 session.setLoggedState(true);
-            //    session.setCurrentUser(logEmail);
+                session.setCurrentUser(logEmail);
 
-                startActivity(new Intent(this, MainMenuActivity.class));
-            //}
+            //    startActivity(new Intent(this, MainMenuActivity.class));
+            }
         });
 
         binding.exitButton.setOnClickListener(view -> {

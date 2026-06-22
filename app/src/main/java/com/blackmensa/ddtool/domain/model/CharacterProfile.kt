@@ -1,4 +1,4 @@
-package com.blackmensa.ddtool.Core
+package com.blackmensa.ddtool.domain.model
 
 class CharacterProfile(
     var name: String,

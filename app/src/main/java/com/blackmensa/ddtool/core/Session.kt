@@ -1,8 +1,9 @@
-package com.blackmensa.ddtool.Core
+package com.blackmensa.ddtool.core
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.blackmensa.ddtool.domain.model.CharacterProfile
 
 class Session(context: Context) {
 
