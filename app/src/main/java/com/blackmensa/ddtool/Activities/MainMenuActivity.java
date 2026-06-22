@@ -4,42 +4,43 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
-import com.blackmensa.ddtool.Core.DataBaseManager;
+import com.blackmensa.ddtool.databinding.MenuMainBinding;
+
 import com.blackmensa.ddtool.R;
 
 public class MainMenuActivity extends Activity {
 
+    private MenuMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu_main);
 
+        binding = MenuMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         //final DataBaseManager dataBase = new DataBaseManager(this);
 
-        final Button playButton = (Button) this.findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
+        binding.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 view.getContext().startActivity(new Intent(view.getContext(), TirarDadosActivity.class));
             }
         });
 
-        final Button selectCharacter = (Button) this.findViewById(R.id.selectCharacter);
-        selectCharacter.setOnClickListener(new View.OnClickListener() {
+        //TODO: Faltan opciones intermedias del menú
+
+        binding.selectCharacter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 view.getContext().startActivity(new Intent(view.getContext(), ProfileListActivity.class));
             }
         });
 
-        final Button exitButton = (Button) this.findViewById(R.id.exit);
-        exitButton.setOnClickListener(new View.OnClickListener() {
+        binding.exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-                System.exit(0);
             }
         });
     }

@@ -12,11 +12,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blackmensa.ddtool.Core.CharacterProfile;
 import com.blackmensa.ddtool.Core.DataBaseManager;
-import com.blackmensa.ddtool.Core.Session;
 import com.blackmensa.ddtool.R;
+import com.blackmensa.ddtool.databinding.NewProfileBinding;
 
 public class CreateProfileActivity extends AppCompatActivity {
 
+    private NewProfileBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

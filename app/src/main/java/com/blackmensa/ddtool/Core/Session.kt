@@ -1,43 +1,39 @@
-package com.blackmensa.ddtool.Core;
+package com.blackmensa.ddtool.Core
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
 
-public class Session {
-    private String currentUser;
-    private SharedPreferences preferencesSession;
+class Session(context: Context) {
 
-    private SharedPreferences.Editor prefEditor;
-    private CharacterProfile SelectedCharacter;
+    private val preferencesSession: SharedPreferences =
+        context.getSharedPreferences("The Tavern", Context.MODE_PRIVATE)
 
-    public Session(Context context) {
-        preferencesSession = context.getSharedPreferences("The Tavern", Context.MODE_PRIVATE);
-        prefEditor = preferencesSession.edit();
+    var currentUser: String?
+    get() = preferencesSession.getString("currentUser", null)
+    set(value) {
+        preferencesSession.edit {
+            putString("currentUser", value)
+        }
     }
 
-    public void setCurrentUser(String s){
-        currentUser = s;
+    var selectedCharacter: CharacterProfile? = null
+
+    fun setLoggedState(logged: Boolean) {
+        preferencesSession.edit {
+            putBoolean("loggedIn", logged)
+        }
     }
 
-    public String getCurrentUser(){
-        return currentUser;
+    fun loggedIn(): Boolean {
+        return preferencesSession.getBoolean("loggedIn", false)
     }
 
-    public void SetLoggedState(boolean logged){
-        prefEditor.putBoolean("loggedIn", logged);
-        prefEditor.apply();
+    fun setCurrentCharacter(profile: CharacterProfile) {
+        selectedCharacter = profile
     }
 
-    public boolean loggedIn(){
-        return preferencesSession.getBoolean("loggedIn", false);
-    }
-
-    public void setCurrentCharacter(CharacterProfile profile){
-        //ESTO SE HACE EN LA LISTA DE PERFILES
-        this.SelectedCharacter = profile;
-    }
-
-    public CharacterProfile getCurrentCharacter(){
-        return SelectedCharacter;
+    fun getCurrentCharacter(): CharacterProfile? {
+        return selectedCharacter
     }
 }

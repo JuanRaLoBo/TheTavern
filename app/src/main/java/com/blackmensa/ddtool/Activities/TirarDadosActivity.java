@@ -4,70 +4,61 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.blackmensa.ddtool.R;
+import com.blackmensa.ddtool.databinding.TirarDadosBinding;
 
 public class TirarDadosActivity extends AppCompatActivity {
+
+    private TirarDadosBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tirar_dados);
 
-        final TextView resultado4 = (TextView) this.findViewById(R.id.result4);
-        final TextView resultado6 = (TextView) this.findViewById(R.id.result6);
-        final TextView resultado8 = (TextView) this.findViewById(R.id.result8);
-        final TextView resultado10 = (TextView) this.findViewById(R.id.result10);
-        final TextView resultado12 = (TextView) this.findViewById(R.id.result12);
-        final TextView resultado20 = (TextView) this.findViewById(R.id.result20);
+        binding = TirarDadosBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        final Button dado4 = (Button) this.findViewById(R.id.button4);
-        dado4.setOnClickListener(new View.OnClickListener() {
+        binding.button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resultado4.setText("El resultado es " + generateRandom(4));
+                binding.result4.setText("El resultado es " + generateRandom(4));
             }
         });
 
-        final Button dado6 = (Button) this.findViewById(R.id.button6);
-        dado6.setOnClickListener(new View.OnClickListener() {
+        binding.button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resultado6.setText("El resultado es " + generateRandom(6));
+                binding.result6.setText("El resultado es " + generateRandom(6));
             }
         });
 
-        final Button dado8 = (Button) this.findViewById(R.id.button8);
-        dado8.setOnClickListener(new View.OnClickListener() {
+        binding.button8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resultado8.setText("El resultado es " + generateRandom(8));
+                binding.result8.setText("El resultado es " + generateRandom(8));
             }
         });
 
-        final Button dado10 = (Button) this.findViewById(R.id.button10);
-        dado10.setOnClickListener(new View.OnClickListener() {
+        binding.button10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resultado10.setText("El resultado es " + generateRandom(10));
+                binding.result10.setText("El resultado es " + generateRandom(10));
             }
         });
 
-        final Button dado12 = (Button) this.findViewById(R.id.button12);
-        dado12.setOnClickListener(new View.OnClickListener() {
+        binding.button12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resultado12.setText("El resultado es " + generateRandom(12));
+                binding.result12.setText("El resultado es " + generateRandom(12));
             }
         });
 
-        final Button dado20 = (Button) this.findViewById(R.id.button20);
-        dado20.setOnClickListener(new View.OnClickListener() {
+        binding.button20.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resultado20.setText("El resultado es " + generateRandom(20));
+                binding.result20.setText("El resultado es " + generateRandom(20));
             }
         });
     }
