@@ -18,11 +18,14 @@ class Session(context: Context) {
         }
     }
 
-    var selectedCharacter: CharacterProfile? = null
+    companion object{
+        private var selectedCharacter: CharacterProfile? = null
+    }
 
     fun setLoggedState(logged: Boolean) {
         preferencesSession.edit {
             putBoolean("loggedIn", logged)
+                .apply()
         }
     }
 

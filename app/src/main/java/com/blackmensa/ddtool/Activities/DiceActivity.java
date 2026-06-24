@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.blackmensa.ddtool.R;
+import com.blackmensa.ddtool.core.Session;
 import com.blackmensa.ddtool.databinding.TirarDadosBinding;
+import com.blackmensa.ddtool.domain.model.CharacterProfile;
 
-public class TirarDadosActivity extends AppCompatActivity {
+public class DiceActivity extends AppCompatActivity {
 
     private TirarDadosBinding binding;
 
@@ -16,6 +18,13 @@ public class TirarDadosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tirar_dados);
+
+        Session session = new Session(this);
+        CharacterProfile character = session.getCurrentCharacter();
+        if (character != null) {
+            binding.characterName.setText("Personaje actual: " +
+                    character.getName());
+        }
 
         binding = TirarDadosBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

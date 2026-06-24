@@ -73,8 +73,8 @@ class CharacterProfile(
                 }
             }*/
 
-    fun proficiency(): Int {
-        return when (level) {
+    val proficiency: Int
+        get() = when (level) {
             in 1..4 ->  2
             in 5..8 ->  3
             in 9..12 ->  4
@@ -82,5 +82,4 @@ class CharacterProfile(
             in 17..20 ->  6
             else -> 0
         }
-    }
 }

@@ -7,8 +7,10 @@ class CharacterRepository(
     private val dataBaseManager: DataBaseManager
 ) {
     fun getProfilesForUser(email: String?): List<CharacterProfile> {
-        // De momento la BD no tiene implementada la consulta de perfiles.
-        // Lo dejamos preparado para MVVM.
-        return emptyList()
+        if (email == null) {
+            return emptyList()
+        }
+
+        return dataBaseManager.getCharacterProfiles(email)
     }
 }

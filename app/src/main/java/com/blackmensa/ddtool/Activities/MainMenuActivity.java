@@ -7,8 +7,6 @@ import android.view.View;
 
 import com.blackmensa.ddtool.databinding.MenuMainBinding;
 
-import com.blackmensa.ddtool.R;
-
 public class MainMenuActivity extends Activity {
 
     private MenuMainBinding binding;
@@ -24,7 +22,7 @@ public class MainMenuActivity extends Activity {
         binding.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.getContext().startActivity(new Intent(view.getContext(), TirarDadosActivity.class));
+                view.getContext().startActivity(new Intent(view.getContext(), DiceActivity.class));
             }
         });
 

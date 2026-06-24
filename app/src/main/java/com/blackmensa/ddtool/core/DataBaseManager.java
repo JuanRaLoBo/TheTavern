@@ -1,5 +1,7 @@
 package com.blackmensa.ddtool.core;
 
+import static java.lang.Boolean.getBoolean;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.blackmensa.ddtool.domain.model.CharacterProfile;
+
+import java.util.ArrayList;
 
 public class DataBaseManager extends SQLiteOpenHelper {
     public static final String DB_Name = "The Tavern";
@@ -183,8 +187,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
         try {
             helper.beginTransaction();
-            long result = helper.insert( USERS_TABLE, null, values);
-            helper.setTransactionSuccessful();
+            long result = helper.insertWithOnConflict(
+                    USERS_TABLE,
+                    null,
+                    values,
+                    SQLiteDatabase.CONFLICT_IGNORE
+            );            helper.setTransactionSuccessful();
 
             return result != -1;
         }catch (SQLException exc){
@@ -217,26 +225,6 @@ public class DataBaseManager extends SQLiteOpenHelper {
             return false;
         }
     }
-
-    /*public ArrayList<CharacterProfile> getCharacterProfiles(String email){
-        ArrayList<CharacterProfile> toret = new ArrayList<CharacterProfile>();
-        SQLiteDatabase helper = getReadableDatabase();
-        String select = "select * from " + PROFILE_TABLE + " where " +
-                USER + " = " + "'" + email + "'";
-        Cursor cursor = helper.rawQuery(select, null);
-        cursor.moveToFirst();
-        if(cursor.getCount() > 0){
-            int x = cursor.getColumnCount();
-            do{
-                toret.add(cursor.)
-            }while (cursor.)
-            return toret;
-        }else{
-            cursor.close();
-            helper.close();
-            return toret;
-        }
-    }*/
 
     public boolean addCharacterProfile(CharacterProfile p, String u){
         SQLiteDatabase helper = getWritableDatabase();
@@ -292,4 +280,114 @@ public class DataBaseManager extends SQLiteOpenHelper {
             helper.close();
         }
     }
+
+    public ArrayList<CharacterProfile> getCharacterProfiles(String email){
+        ArrayList<CharacterProfile> profiles =
+                new ArrayList<>();
+
+        SQLiteDatabase helper =
+                getReadableDatabase();
+
+        Cursor cursor = helper.query(
+                PROFILE_TABLE,
+                null,
+                USER + " = ?",
+                new String[]{email},
+                null,
+                null,
+                CHARACTER_NAME
+        );
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                profiles.add(buildCharacterProfile(cursor));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        helper.close();
+
+        return profiles;
+    }
+
+    private CharacterProfile buildCharacterProfile(
+            Cursor cursor
+    ) {
+        return new CharacterProfile(
+                cursor.getString(cursor.getColumnIndexOrThrow(CHARACTER_NAME)),
+                "",
+                cursor.getInt(cursor.getColumnIndexOrThrow(STRENGTH)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(DEXTERITY)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(CONSTITUTION)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(INTELLIGENCE)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(WISDOM)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(CHARISMA)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(CHARACTER_LEVEL)),
+                getSavingThrows(cursor),
+                getSkills(cursor),
+                cursor.getInt(cursor.getColumnIndexOrThrow(GOLD)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(HITPOINTS))
+        );
+    }
+
+
+    private boolean getBoolean(
+            Cursor cursor,
+            String column
+    ) {
+        return cursor.getInt(
+                cursor.getColumnIndexOrThrow(column)
+        ) == 1;
+    }
+
+    private boolean[] getSavingThrows(
+            Cursor cursor
+    ) {
+        return new boolean[]{
+                getBoolean(cursor, STRENGTH_SAVE),
+                getBoolean(cursor, DEXTERITY_SAVE),
+                getBoolean(cursor, CONSTITUTION_SAVE),
+                getBoolean(cursor, INTELLIGENCE_SAVE),
+                getBoolean(cursor, WISDOM_SAVE),
+                getBoolean(cursor, CHARISMA_SAVE)
+        };
+    }
+
+    private boolean[] getSkills(
+            Cursor cursor
+    ) {
+
+        String[] skillColumns = {
+                ACROBATICS,
+                ANIMAL_HANDLING,
+                ARCANA,
+                ATHLETICS,
+                DECEPTION,
+                HISTORY,
+                INSIGHT,
+                INTIMIDATION,
+                INVESTIGATION,
+                MEDICINE,
+                NATURE,
+                PERCEPTION,
+                PERFORMANCE,
+                PERSUASION,
+                RELIGION,
+                SLEIGHT_OF_HAND,
+                STEALTH,
+                SURVIVAL
+        };
+
+        boolean[] skills =
+                new boolean[skillColumns.length];
+
+        for (int i = 0; i < skillColumns.length; i++) {
+            skills[i] =
+                    getBoolean(cursor, skillColumns[i]);
+        }
+
+        return skills;
+    }
+
+
 }

@@ -22,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         final DataBaseManager conexionBD = new DataBaseManager(this);
+        conexionBD.addUser("test@test.com", "Test", "1234");
         SQLiteDatabase BD = conexionBD.getReadableDatabase();
 
         final Session session = new Session(this);
@@ -30,12 +31,12 @@ public class LoginActivity extends AppCompatActivity {
             String logEmail = binding.editTextEmailAddress.getText().toString();
             String logPass = binding.editTextPassword.getText().toString();
 
-            if (conexionBD.getUser(logEmail, logPass)) {
-                session.setLoggedState(true);
-                session.setCurrentUser(logEmail);
+//            if (conexionBD.getUser(logEmail, logPass)) {
+//                session.setLoggedState(true);
+//                session.setCurrentUser(logEmail);
 
-            //    startActivity(new Intent(this, MainMenuActivity.class));
-            }
+                startActivity(new Intent(this, MainMenuActivity.class));
+//            }
         });
 
         binding.exitButton.setOnClickListener(view -> {

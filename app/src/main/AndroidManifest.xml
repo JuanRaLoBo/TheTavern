@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.MainMenuActivity"></activity>
-        <activity android:name=".Activities.TirarDadosActivity"></activity>
+        <activity android:name=".Activities.DiceActivity"></activity>
         <activity android:name=".Activities.RoomListActivity"></activity>
         <activity android:name=".Activities.RoomActivity"></activity>
         <activity android:name=".Activities.CreateRoomActivity"></activity>
