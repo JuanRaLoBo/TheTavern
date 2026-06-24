@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.blackmensa.ddtool.core.Session;
+import com.blackmensa.ddtool.data.local.database.AppDatabase;
 import com.blackmensa.ddtool.data.repository.CharacterRepository;
 import com.blackmensa.ddtool.domain.model.CharacterProfile;
-import com.blackmensa.ddtool.core.DataBaseManager;
 import com.blackmensa.ddtool.databinding.ProfileListBinding;
 import com.blackmensa.ddtool.ui.profilelist.ProfileListViewModel;
 import com.blackmensa.ddtool.ui.profilelist.ProfileListViewModelFactory;
@@ -30,7 +30,16 @@ public class ProfileListActivity extends AppCompatActivity {
         binding = ProfileListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Session session = new Session(this);
-        final DataBaseManager dataBase = new DataBaseManager(this);
+
+        // Inicializar la base de datos
+        AppDatabase database =
+                AppDatabase.Companion.getDatabase(this);
+
+        // Inicializar el repositorio de personajes
+        CharacterRepository repository =
+                new CharacterRepository(database.characterDao());
+
+        // Inicializar el adaptador de la lista de personajes
         this.itemsAdapter = new ArrayAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
@@ -38,7 +47,6 @@ public class ProfileListActivity extends AppCompatActivity {
         );
 
         binding.characterList.setAdapter(itemsAdapter);
-        CharacterRepository repository = new CharacterRepository(dataBase);
         ProfileListViewModelFactory factory = new ProfileListViewModelFactory(repository);
 
         viewModel = new ViewModelProvider(this, factory).get(ProfileListViewModel.class);

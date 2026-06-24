@@ -3,11 +3,11 @@ package com.blackmensa.ddtool.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
-import com.blackmensa.ddtool.core.DataBaseManager;
 import com.blackmensa.ddtool.core.Session;
+import com.blackmensa.ddtool.data.local.database.AppDatabase;
+import com.blackmensa.ddtool.data.repository.UserRepository;
 import com.blackmensa.ddtool.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -18,20 +18,35 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Configurar el binding de la actividad
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        // Establecer la vista de la actividad
         setContentView(binding.getRoot());
 
-        final DataBaseManager conexionBD = new DataBaseManager(this);
-        conexionBD.addUser("test@test.com", "Test", "1234");
-        SQLiteDatabase BD = conexionBD.getReadableDatabase();
+        // Inicializar la base de datos
+        AppDatabase database =
+                AppDatabase.Companion.getDatabase(this);
+
+        // Inicializar el repositorio de usuarios
+        UserRepository userRepository =
+                new UserRepository(
+                        database.userDao()
+                );
+
+        // Agregar un usuario de prueba
+        userRepository.addUser("test@test.com", "Test", "1234");
 
         final Session session = new Session(this);
 
+        // Configurar el botón de inicio de sesión
         binding.loginButton.setOnClickListener(view -> {
             String logEmail = binding.editTextEmailAddress.getText().toString();
             String logPass = binding.editTextPassword.getText().toString();
 
-//            if (conexionBD.getUser(logEmail, logPass)) {
+//            if (userRepository.login(
+//                        logEmail,
+//                        logPass
+//            )){
 //                session.setLoggedState(true);
 //                session.setCurrentUser(logEmail);
 
@@ -39,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
 //            }
         });
 
+        //
         binding.exitButton.setOnClickListener(view -> {
             finish();
         });

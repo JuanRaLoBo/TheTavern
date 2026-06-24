@@ -1,20 +1,15 @@
 package com.blackmensa.ddtool.Activities;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blackmensa.ddtool.core.Session;
+import com.blackmensa.ddtool.data.local.database.AppDatabase;
+import com.blackmensa.ddtool.data.repository.CharacterRepository;
 import com.blackmensa.ddtool.domain.model.CharacterProfile;
-import com.blackmensa.ddtool.core.DataBaseManager;
-import com.blackmensa.ddtool.R;
 import com.blackmensa.ddtool.databinding.NewProfileBinding;
 
 public class CreateProfileActivity extends AppCompatActivity {
@@ -28,8 +23,11 @@ public class CreateProfileActivity extends AppCompatActivity {
         binding = NewProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        DataBaseManager dataBase = new DataBaseManager(this);
-        Session session = new Session(this);
+        AppDatabase database =
+                AppDatabase.Companion.getDatabase(this);
+
+        CharacterRepository repository =
+                new CharacterRepository(database.characterDao());        Session session = new Session(this);
 
         binding.stats.setVisibility(ConstraintLayout.VISIBLE);
         binding.skills.setVisibility(ConstraintLayout.GONE);
@@ -46,7 +44,7 @@ public class CreateProfileActivity extends AppCompatActivity {
             }
             CharacterProfile character = buildCharacterFromForm();
 
-            boolean saved = dataBase.addCharacterProfile(
+            boolean saved = repository.addCharacterProfile(
                     character,
                     session.getCurrentUser()
             );

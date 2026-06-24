@@ -1,16 +1,31 @@
 package com.blackmensa.ddtool.data.repository
 
-import com.blackmensa.ddtool.core.DataBaseManager
+import com.blackmensa.ddtool.data.local.dao.CharacterDao
+import com.blackmensa.ddtool.data.local.mapper.toDomain
+import com.blackmensa.ddtool.data.local.mapper.toEntity
 import com.blackmensa.ddtool.domain.model.CharacterProfile
 
 class CharacterRepository(
-    private val dataBaseManager: DataBaseManager
+    private val characterDao: CharacterDao
 ) {
     fun getProfilesForUser(email: String?): List<CharacterProfile> {
-        if (email == null) {
-            return emptyList()
-        }
+        if (email.isNullOrBlank()) return emptyList()
 
-        return dataBaseManager.getCharacterProfiles(email)
+        return characterDao
+            .getCharactersForUser(email)
+            .map { it.toDomain() }
+    }
+
+    fun addCharacterProfile(
+        profile: CharacterProfile,
+        ownerEmail: String?
+    ): Boolean {
+        if (ownerEmail.isNullOrBlank()) return false
+
+        val result = characterDao.insertCharacter(
+            profile.toEntity(ownerEmail)
+        )
+
+        return result != -1L
     }
 }
