@@ -8,14 +8,6 @@ import com.blackmensa.ddtool.domain.model.CharacterProfile
 class CharacterRepository(
     private val characterDao: CharacterDao
 ) {
-    fun getProfilesForUser(email: String?): List<CharacterProfile> {
-        if (email.isNullOrBlank()) return emptyList()
-
-        return characterDao
-            .getCharactersForUser(email)
-            .map { it.toDomain() }
-    }
-
     fun addCharacterProfile(
         profile: CharacterProfile,
         ownerEmail: String?
@@ -27,5 +19,19 @@ class CharacterRepository(
         )
 
         return result != -1L
+    }
+
+    fun getCharacterById(id: Int): CharacterProfile? {
+        return characterDao
+            .getCharacterById(id)
+            ?.toDomain()
+    }
+
+    fun getProfilesForUser(email: String?): List<CharacterProfile> {
+        if (email.isNullOrBlank()) return emptyList()
+
+        return characterDao
+            .getCharactersForUser(email)
+            .map { it.toDomain() }
     }
 }

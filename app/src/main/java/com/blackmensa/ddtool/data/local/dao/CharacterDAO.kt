@@ -12,6 +12,9 @@ interface CharacterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCharacter(character: CharacterEntity): Long
 
+    @Query("SELECT * FROM characters WHERE id = :id LIMIT 1")
+    fun getCharacterById(id: Int): CharacterEntity?
+
     @Query("SELECT * FROM characters WHERE ownerEmail = :email ORDER BY name")
     fun getCharactersForUser(email: String): List<CharacterEntity>
 }

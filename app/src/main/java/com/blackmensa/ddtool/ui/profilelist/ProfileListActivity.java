@@ -1,4 +1,4 @@
-package com.blackmensa.ddtool.Activities;
+package com.blackmensa.ddtool.ui.profilelist;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,13 +7,13 @@ import android.widget.ArrayAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.blackmensa.ddtool.ui.createprofile.CreateProfileActivity;
 import com.blackmensa.ddtool.core.Session;
 import com.blackmensa.ddtool.data.local.database.AppDatabase;
 import com.blackmensa.ddtool.data.repository.CharacterRepository;
 import com.blackmensa.ddtool.domain.model.CharacterProfile;
 import com.blackmensa.ddtool.databinding.ProfileListBinding;
-import com.blackmensa.ddtool.ui.profilelist.ProfileListViewModel;
-import com.blackmensa.ddtool.ui.profilelist.ProfileListViewModelFactory;
+import com.blackmensa.ddtool.ui.dice.DiceActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class ProfileListActivity extends AppCompatActivity {
                     CharacterProfile selected =
                             profiles.get(position);
 
-                    session.setCurrentCharacter(selected);
+                    session.setSelectedCharacterId(selected.getId());
 
                     startActivity(
                             new Intent(

@@ -5,6 +5,7 @@ import com.blackmensa.ddtool.domain.model.CharacterProfile
 
 fun CharacterProfile.toEntity(ownerEmail: String): CharacterEntity {
     return CharacterEntity(
+        id = id,
         ownerEmail = ownerEmail,
         name = name,
         charClass = charClass,
@@ -46,6 +47,7 @@ fun CharacterProfile.toEntity(ownerEmail: String): CharacterEntity {
 
 fun CharacterEntity.toDomain(): CharacterProfile {
     return CharacterProfile(
+        id = id,
         name = name,
         charClass = charClass,
         strength = strength,

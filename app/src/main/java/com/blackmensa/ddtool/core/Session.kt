@@ -3,7 +3,6 @@ package com.blackmensa.ddtool.core
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.blackmensa.ddtool.domain.model.CharacterProfile
 
 class Session(context: Context) {
 
@@ -18,9 +17,13 @@ class Session(context: Context) {
         }
     }
 
-    companion object{
-        private var selectedCharacter: CharacterProfile? = null
-    }
+    var selectedCharacterId: Int
+        get() = preferencesSession.getInt("selectedCharacterId", -1)
+        set(value) {
+            preferencesSession.edit()
+                .putInt("selectedCharacterId", value)
+                .apply()
+        }
 
     fun setLoggedState(logged: Boolean) {
         preferencesSession.edit {
@@ -31,13 +34,5 @@ class Session(context: Context) {
 
     fun loggedIn(): Boolean {
         return preferencesSession.getBoolean("loggedIn", false)
-    }
-
-    fun setCurrentCharacter(profile: CharacterProfile) {
-        selectedCharacter = profile
-    }
-
-    fun getCurrentCharacter(): CharacterProfile? {
-        return selectedCharacter
     }
 }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.blackmensa.ddtool.databinding.MenuMainBinding;
+import com.blackmensa.ddtool.ui.dice.DiceActivity;
+import com.blackmensa.ddtool.ui.profilelist.ProfileListActivity;
 
 public class MainMenuActivity extends Activity {
 

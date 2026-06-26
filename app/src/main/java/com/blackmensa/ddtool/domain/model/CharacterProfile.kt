@@ -1,15 +1,16 @@
 package com.blackmensa.ddtool.domain.model
 
-class CharacterProfile(
+data class CharacterProfile(
+    val id: Int = 0,
     var name: String,
     var charClass: String,
+    var level: Int,
     var strength: Int,
     var dexterity: Int,
     var const: Int,
     var intelligence: Int,
     var wisdom: Int,
     var charisma: Int,
-    var level: Int,
     var savingThrows: BooleanArray,
     var skills: BooleanArray,
     var currentGold: Int,
@@ -72,14 +73,4 @@ class CharacterProfile(
                         break;
                 }
             }*/
-
-    val proficiency: Int
-        get() = when (level) {
-            in 1..4 ->  2
-            in 5..8 ->  3
-            in 9..12 ->  4
-            in 13..16 ->  5
-            in 17..20 ->  6
-            else -> 0
-        }
 }

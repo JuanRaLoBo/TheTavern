@@ -1,11 +1,13 @@
-package com.blackmensa.ddtool.Activities;
+package com.blackmensa.ddtool.ui.createprofile;
 
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.blackmensa.ddtool.core.ServiceLocator;
 import com.blackmensa.ddtool.core.Session;
 import com.blackmensa.ddtool.data.local.database.AppDatabase;
 import com.blackmensa.ddtool.data.repository.CharacterRepository;
@@ -14,6 +16,7 @@ import com.blackmensa.ddtool.databinding.NewProfileBinding;
 
 public class CreateProfileActivity extends AppCompatActivity {
 
+    private CreateProfileViewModel viewModel;
     private NewProfileBinding binding;
 
     @Override
@@ -27,7 +30,17 @@ public class CreateProfileActivity extends AppCompatActivity {
                 AppDatabase.Companion.getDatabase(this);
 
         CharacterRepository repository =
-                new CharacterRepository(database.characterDao());        Session session = new Session(this);
+                ServiceLocator.INSTANCE.provideCharacterRepository(this);
+
+        Session session = new Session(this);
+
+        CreateProfileViewModelFactory factory =
+                new CreateProfileViewModelFactory(repository);
+
+        viewModel = new ViewModelProvider(
+                this,
+                factory
+        ).get(CreateProfileViewModel.class);
 
         binding.stats.setVisibility(ConstraintLayout.VISIBLE);
         binding.skills.setVisibility(ConstraintLayout.GONE);
@@ -44,10 +57,14 @@ public class CreateProfileActivity extends AppCompatActivity {
             }
             CharacterProfile character = buildCharacterFromForm();
 
-            boolean saved = repository.addCharacterProfile(
-                    character,
-                    session.getCurrentUser()
-            );
+            boolean saved;
+            if (!viewModel.canSave(character, session.getCurrentUser())) {
+                Toast.makeText(this, "Datos incorrectos", Toast.LENGTH_SHORT).show();
+                return;
+            }else{
+                viewModel.saveCharacter(character, session.getCurrentUser());
+                saved = true;
+            }
 
             if (saved) {
                 Toast.makeText(this, "Personaje guardado", Toast.LENGTH_SHORT).show();
@@ -86,10 +103,11 @@ public class CreateProfileActivity extends AppCompatActivity {
                 binding.checkBox15.isChecked(),
                 binding.checkBox16.isChecked(),
                 binding.checkBox17.isChecked(),
-                binding.checkBox18.isChecked(),
+                binding.checkBox18.isChecked()
         };
 
         return new CharacterProfile(
+                0,
                 binding.charName.getText().toString(),
                 binding.charClass.getText().toString(),
                 Integer.parseInt(binding.setStr.getText().toString()),
