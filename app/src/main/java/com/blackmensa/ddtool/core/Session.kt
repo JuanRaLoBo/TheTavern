@@ -17,22 +17,18 @@ class Session(context: Context) {
         }
     }
 
+    var loggedIn: Boolean
+        get() = preferencesSession.getBoolean("loggedIn", false)
+        set(value) {
+            preferencesSession.edit {
+                putBoolean("loggedIn", value)
+            }
+        }
+
     var selectedCharacterId: Int
         get() = preferencesSession.getInt("selectedCharacterId", -1)
         set(value) {
             preferencesSession.edit()
                 .putInt("selectedCharacterId", value)
-                .apply()
         }
-
-    fun setLoggedState(logged: Boolean) {
-        preferencesSession.edit {
-            putBoolean("loggedIn", logged)
-                .apply()
-        }
-    }
-
-    fun loggedIn(): Boolean {
-        return preferencesSession.getBoolean("loggedIn", false)
-    }
 }

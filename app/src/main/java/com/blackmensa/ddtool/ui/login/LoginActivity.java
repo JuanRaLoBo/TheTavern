@@ -1,7 +1,6 @@
 package com.blackmensa.ddtool.ui.login;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -53,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             String logPass = binding.editTextPassword.getText().toString();
 
 //            if (viewModel.login(logEmail, logPass)){
-//                session.setLoggedState(true);
+//                session.setLoggedIn(true);
 //                session.setCurrentUser(logEmail);
                 startActivity(new Intent(this, MainMenuActivity.class));
 //            }else {

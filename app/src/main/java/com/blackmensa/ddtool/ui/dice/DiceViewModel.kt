@@ -8,7 +8,10 @@ class DiceViewModel(
     private val repository: CharacterRepository
 ) : ViewModel() {
 
-    fun getSelectedCharacter(id: Int): CharacterProfile? {
-        return repository.getCharacterById(id)
+    fun getSelectedCharacter(characterId: Int): CharacterProfile? {
+        if (characterId < 0) {
+            return null
+        }
+        return repository.getCharacterById(characterId)
     }
 }

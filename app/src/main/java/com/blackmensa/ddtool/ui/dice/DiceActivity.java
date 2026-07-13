@@ -1,8 +1,11 @@
 package com.blackmensa.ddtool.ui.dice;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.blackmensa.ddtool.core.ServiceLocator;
@@ -15,6 +18,8 @@ import com.blackmensa.ddtool.domain.service.CharacterService;
 public class DiceActivity extends AppCompatActivity {
 
     private TirarDadosBinding binding;
+    private DiceViewModel viewModel;
+    private CharacterService characterService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,34 +31,17 @@ public class DiceActivity extends AppCompatActivity {
         Session session = ServiceLocator.INSTANCE.provideSession(this);
         CharacterRepository repository = ServiceLocator.INSTANCE.provideCharacterRepository(this);
 
+
+        DiceViewModelFactory factory =
+                new DiceViewModelFactory(repository);
+
+        viewModel = new ViewModelProvider(this, factory).get(DiceViewModel.class);
+
+        characterService = new CharacterService();
         int characterID = session.getSelectedCharacterId();
-        CharacterProfile character = repository.getCharacterById(characterID);
-        CharacterService characterService = new CharacterService();
+        CharacterProfile character = viewModel.getSelectedCharacter(characterID);
 
-        if (character != null) {
-            binding.characterName.setText("Personaje actual: " + character.getName());
-            binding.charlvl.setText("Nivel: " + character.getLevel());
-
-            binding.strMod.setText("STR: " +
-                    characterService.formatModifier(character.getStrength())
-            );
-            binding.dexMod.setText("DEX: " +
-                    characterService.formatModifier(character.getDexterity())
-            );
-            binding.conMod.setText("CON: " +
-                    characterService.formatModifier(character.getConst())
-            );
-            binding.intMod.setText("INT: " +
-                    characterService.formatModifier(character.getIntelligence())
-            );
-            binding.wisMod.setText("WIS: " +
-                    characterService.formatModifier(character.getWisdom())
-            );
-            binding.charMod.setText("CHA: " +
-                    characterService.formatModifier(character.getCharisma())
-            );
-        }
-
+        showCharacter(character);
         setupDiceButtons();
     }
 
@@ -76,5 +64,48 @@ public class DiceActivity extends AppCompatActivity {
             resultado = (int) Math.floor(Math.random()*(dado+1));
         }while (resultado == 0);
         return String.valueOf(resultado);
+    }
+
+    private void showCharacter(CharacterProfile character) {
+        if (character == null) {
+            binding.characterName.setText("Ningún personaje seleccionado");
+            binding.charlvl.setText("");
+            binding.stats.setVisibility(View.GONE);
+            return;
+        }
+
+        binding.stats.setVisibility(View.VISIBLE);
+
+        binding.characterName.setText(
+                "Personaje actual: " + character.getName()
+        );
+
+        binding.charlvl.setText(
+                "Nivel: " + character.getLevel()
+        );
+
+        binding.strMod.setText(
+                "STR " + characterService.formatModifier(character.getStrength())
+        );
+
+        binding.dexMod.setText(
+                "DEX " + characterService.formatModifier(character.getDexterity())
+        );
+
+        binding.conMod.setText(
+                "CON " + characterService.formatModifier(character.getConst())
+        );
+
+        binding.intMod.setText(
+                "INT " + characterService.formatModifier(character.getIntelligence())
+        );
+
+        binding.wisMod.setText(
+                "WIS " + characterService.formatModifier(character.getWisdom())
+        );
+
+        binding.charMod.setText(
+                "CHA " + characterService.formatModifier(character.getCharisma())
+        );
     }
 }
